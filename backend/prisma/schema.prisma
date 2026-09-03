@@ -1,0 +1,76 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum BotStatus {
+  STARTING
+  ONLINE
+  OFFLINE
+  STOPPED
+  CRASHED
+  RESTARTING
+}
+
+enum Runtime {
+  NODEJS
+  PYTHON
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  role      Role     @default(USER)
+  bots      Bot[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Bot {
+  id           String    @id @default(uuid())
+  name         String
+  runtime      Runtime
+  entryPoint   String    @default("index.js")
+  status       BotStatus @default(OFFLINE)
+  autoRestart  Boolean   @default(true)
+  cpuLimit     Float     @default(0.5)
+  ramLimit     Int       @default(512)
+  storageLimit Int       @default(1024)
+  containerId  String?   @unique
+  ownerId      String
+  owner        User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  envVars      EnvVar[]
+  logs         BotLog[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model EnvVar {
+  id    String @id @default(uuid())
+  key   String
+  value String
+  botId String
+  bot   Bot    @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@unique([botId, key])
+}
+
+model BotLog {
+  id        String   @id @default(uuid())
+  botId     String
+  bot       Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  content   String
+  type      String   @default("stdout")
+  timestamp DateTime @default(now())
+}

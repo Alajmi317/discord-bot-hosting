@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: discord_hosting_db
+    environment:
+      POSTGRES_USER: discord_user
+      POSTGRES_PASSWORD: discord_password
+      POSTGRES_DB: discord_hosting
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: discord_hosting_backend
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      DATABASE_URL: "postgresql://discord_user:discord_password@postgres:5432/discord_hosting?schema=public"
+      JWT_SECRET: "change_this_to_a_secure_jwt_secret_in_production"
+      STORAGE_PATH: "/var/discord-bots-storage"
+      DOCKER_SOCKET: "/var/run/docker.sock"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - bot_storage:/var/discord-bots-storage
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  bot_storage:
