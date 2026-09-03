@@ -9,12 +9,12 @@ document.getElementById('botForm').addEventListener('submit', async (e) => {
   statusDiv.innerText = "جاري رفع الكود وتشيغل البوت...";
 
   try {
-    // إرسال كود البوت إلى الـ Backend لتشغيله في Docker
-    const response = await fetch('http://localhost:5000/api/bots/create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, runtime, code })
-    });
+    // بدلاً من localhost
+const response = await fetch('https://your-backend.up.railway.app/api/bots/create', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name, runtime, code })
+});
 
     const data = await response.json();
     if (response.ok) {
