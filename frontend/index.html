@@ -1,1 +1,33 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة التحكم - استضافة البوتات</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🚀 إضافة بوت جديد</h1>
+    
+    <form id="botForm">
+      <label>اسم البوت:</label>
+      <input type="text" id="botName" placeholder="مثال: ProBot" required>
 
+      <label>لغة التشغيل:</label>
+      <select id="runtime">
+        <option value="NODEJS">Node.js (JavaScript)</option>
+        <option value="PYTHON">Python</option>
+      </select>
+
+      <label>كود البوت الرئيسي:</label>
+      <textarea id="botCode" rows="10" placeholder="// ضع كود البوت هنا..." required></textarea>
+
+      <button type="submit">تشغيل البوت الأن ⚡</button>
+    </form>
+
+    <div id="status"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
